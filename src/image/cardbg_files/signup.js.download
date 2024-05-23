@@ -1,0 +1,79 @@
+jQuery(function(){  
+
+    jQuery('.signIn-popup .crt-acct').on('click', function(){
+        jQuery('.signIn-popup .signIn-block').hide();
+        jQuery('.signIn-popup .forgetpwd-block').hide();
+        jQuery('.signIn-popup .signinPhone-block').hide();
+        jQuery('.signIn-popup .resetpwd-block').hide();
+        jQuery('.signIn-popup .head .title').html('Signup to');
+        jQuery('.signIn-popup .registration-block').fadeIn();
+    });
+
+    jQuery('.signIn-popup .signIn').on('click', function(){
+        jQuery('.signIn-popup .registration-block').hide();
+        jQuery('.signIn-popup .forgetpwd-block').hide();
+        jQuery('.signIn-popup .signinPhone-block').hide();
+        jQuery('.signIn-popup .resetpwd-block').hide();
+        jQuery('.signIn-popup .head .title').html('Signin to');
+        jQuery('.signIn-popup .signIn-block, .social-signIn').fadeIn();
+    });
+
+    jQuery('.signIn-popup .forgt-pwd').on('click', function(){
+        jQuery('.signIn-popup .signIn-block, .social-signIn').hide();
+        jQuery('.signIn-popup .registration-block').hide();
+        jQuery('.signIn-popup .signinPhone-block').hide();
+        jQuery('.signIn-popup .resetpwd-block').hide();
+        jQuery('.signIn-popup .head .title').html('Forgot Password?');
+        jQuery('.signIn-popup .forgetpwd-block').fadeIn();
+    });
+
+    jQuery('.signIn-popup .signIn-phone').on('click', function(){
+        jQuery('.signIn-popup .signIn-block, .social-signIn').hide();
+        jQuery('.signIn-popup .registration-block').hide();
+        jQuery('.signIn-popup .forgetpwd-block').hide();
+        jQuery('.signIn-popup .signinPhone-block').hide();
+        jQuery('.signIn-popup .resetpwd-block').hide();
+        jQuery('.signIn-popup .head .title').html('Signin to');
+        jQuery('.signIn-popup .signinPhone-block').fadeIn();
+    });
+
+    // jQuery('.signIn-popup .pwd-btn').on('click', function(){
+    //     jQuery('.signIn-popup .signIn-block, .social-signIn').hide();
+    //     jQuery('.signIn-popup .registration-block').hide();
+    //     jQuery('.signIn-popup .signinPhone-block').hide();
+    //     jQuery('.signIn-popup .forgetpwd-block').hide();
+    //     jQuery('.signIn-popup .head .title').html('Reset Password');
+    //     jQuery('.signIn-popup .resetpwd-block').fadeIn();
+    // });
+
+
+    // jQuery('.signinphone-btn').on('click', function(){
+    //     jQuery('.phoneinput').hide();
+    //     jQuery('.otp-title').show();
+    //     jQuery('.otp-note').show();
+    //     jQuery('.otp-input-group').show();
+    // });
+
+    //otp input
+//     jQuery('.otp-input-group').find('input').each(function() {
+//         jQuery(this).attr('maxlength', 1);
+//         jQuery(this).on('keyup', function(e) {
+//             var parent = jQuery(jQuery(this).parent());
+            
+//             if(e.keyCode === 8 || e.keyCode === 37) {
+//                 var prev = parent.find('input#' + jQuery(this).data('previous'));
+                
+//                 if(prev.length) {
+//                     jQuery(prev).select();
+//                 }
+//             } else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+//                 var next = parent.find('input#' + jQuery(this).data('next'));
+                
+//                 if(next.length) {
+//                     console.log(next.length);
+//                     jQuery(next).select();
+//                 } 
+//             }
+//     });
+// });
+});

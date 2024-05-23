@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="8.555" height="5.5" viewBox="0 0 8.555 5.5">
+    <defs>
+        <style>
+            .cls-1{stroke:#000;stroke-miterlimit:10;stroke-width:.5px}
+        </style>
+    </defs>
+    <g id="down-arrow" transform="translate(.277 .25)">
+        <path id="Path" d="M7.918.1a.255.255 0 0 0-.4 0L4 4.211.482.1a.255.255 0 0 0-.4 0 .371.371 0 0 0 0 .467L3.8 4.9A.258.258 0 0 0 4 5a.268.268 0 0 0 .2-.1L7.911.564A.362.362 0 0 0 7.918.1z" class="cls-1"/>
+    </g>
+</svg>

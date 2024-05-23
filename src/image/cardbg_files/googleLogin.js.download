@@ -1,0 +1,94 @@
+jQuery(document).ready(() => {
+    
+    let googleUser = {}
+    let auth2;
+    let startApp = () => {
+        gapi.load('auth2', function(){
+          auth2 = gapi.auth2.init({
+            client_id: '550185277537-p39pima0v4s762a04833mm6isv3bjeel.apps.googleusercontent.com',            
+            scope: 'profile'
+          })
+          // attachSignin(document.getElementById("google"))
+        })
+    }
+
+
+    // let attachSignin = element =>  {
+    //     auth2.attachClickHandler(element, {},
+    //         googleUser => {
+    //             let googleData = googleUser.getBasicProfile() 
+    //             let userData = {
+    //                 firstname : googleData.getGivenName(),
+    //                 lastname : googleData.getFamilyName(),
+    //                 email : googleData.getEmail(),
+    //                 logintype : "google"
+    //             }               
+    //             callApi(userData) 
+    //         }, error => {
+    //             console.log(error)
+    //     })
+    // }
+
+    startApp()
+
+    jQuery(document).on({
+        click : e => {
+            if (auth2.isSignedIn.get()) {
+              var googleData = auth2.currentUser.get().getBasicProfile();
+              var id_token = auth2.currentUser.get().getAuthResponse().id_token;
+              let userData = {
+                    // firstname : googleData.getGivenName(),
+                    // lastname : googleData.getFamilyName(),
+                    // email : googleData.getEmail(),
+                    logintype : "google",
+                    id_token : id_token
+                }
+                callApi(userData)
+            } else {
+                auth2.attachClickHandler(document.getElementById("google"), {},
+                    googleUser => {
+                        let googleData = googleUser.getBasicProfile() 
+                        let userData = {
+                            // firstname : googleData.getGivenName(),
+                            // lastname : googleData.getFamilyName(),
+                            // email : googleData.getEmail(),
+                            logintype : "google",
+                            id_token : googleUser.getAuthResponse().id_token
+                        }
+                        callApi(userData) 
+                    }, error => {
+                        console.log(error)
+                })
+            }
+        }
+    }, "#google")
+
+    let callApi = (userData) => {
+        jQuery.ajax({
+            type : "POST",
+            // url : "/customerlogin/sociallogin/save",
+            url : "/SocialLogin/login.php",
+            data : userData,
+            dataType : "json",
+            beforeSend : () => {
+                jQuery(".loader-wrap").fadeIn()
+                if (jQuery(document).find(".social-signIn").hasClass("popup-social")) {
+                    jQuery(".signIn-popup").fadeOut()
+                    jQuery("body").removeClass("prevent-scroll")
+                }
+            },
+            success : response => {
+                if (response.error == 0) {
+                    if (jQuery(document).find(".social-signIn").hasClass("popup-social")) {
+                        window.location.reload()
+                    } else {
+                        location.href = "/customer/account/index"    
+                    }
+                } else {
+                    alert(response.message)
+                }
+            },
+            complete : () => jQuery(".loader-wrap").fadeOut()
+        }); 
+    }
+})

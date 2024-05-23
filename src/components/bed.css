@@ -1,0 +1,118 @@
+/* .container{
+    width: 100vw;
+    text-align: center;
+   
+}
+body{
+    background-color: rgb(205, 205, 205);
+}
+h1{
+    text-align: center;
+}
+.card{
+     display: flex;
+    justify-content: center;
+    flex-direction: column; 
+
+    
+
+}
+.card-item{
+    width: 40vw;
+   text-align: center;
+   border: 2px whitesmoke solid;
+   margin: 10px;
+   background-color: white;
+}
+.para{
+    display: flex;
+    justify-content: center;
+    
+}
+.para p{
+    margin: 20px;
+    color: red;
+}
+.card-item:hover{
+    transform: scale(1.04);
+    transition: 0.5s;
+    box-shadow: 5px 5px 5px grey;
+}
+.bed{
+    text-align: center;
+}
+.filter button{
+    margin: 20px;
+    background-color: orange;
+    height: 40px;
+    border-radius: 20px;
+} */
+
+*{
+    border: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.containero{
+ 
+    text-align: center;
+    background-color: rgb(227, 213, 202);
+}
+.containero h1{
+    color: rgb(70, 63, 58) ;
+    text-align: left;
+    margin-left: 50px;
+    padding-top: 20px;
+}
+.filter button{
+    margin:20px;
+    background-color: rgb(174, 149, 135);
+    /* background-color: rgb(201, 173, 167) ; */
+    height: 40px;
+    border-radius: 20px;
+    width: 150px;
+}
+.card-item{
+    width: 40vw;
+    text-align: center;
+    border: 2px whitesmoke solid;
+    margin: 10px;
+    background-color: white;
+    border-radius: 10px;
+    
+
+}
+.card-item:hover{
+    box-shadow: 7px 7px 7px rgb(174, 149, 135);
+    transition: 0.3s ease-in;
+}
+.card-item img{
+    width: 30vw;
+}
+.card-item h2{
+    color: rgb(70, 63, 58) ;
+}
+.cardop{
+    
+    /* background-color: black; */
+    width: 100vw;
+    margin: 0px;
+    display: flex;
+    justify-content: center;
+}
+.para p{
+    color: rgb(70, 63, 58) ;
+    font-weight: 600;
+}
+.button{
+    background-color: rgb(174, 149, 135);
+    height: 40px;
+    border-radius: 20px;
+    width: 150px;
+
+}
+.button:hover{
+    background-color: white;
+    border: 2px black solid;
+}

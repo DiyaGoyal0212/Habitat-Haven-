@@ -1,0 +1,40 @@
+*{
+    text-align: center;
+}
+.containerd{
+    margin-top: 100px;
+}
+.input_spaced{
+    margin-bottom: 10px;
+}
+input{
+    height: 30px;
+    width: 20%;
+    font-size: 18px;
+    border: 2px black solid;
+}
+.buttond{
+    height: 30px;
+    width: 15%;
+    background-color:grey;
+    border: none;
+}
+.logout{
+    margin-right: 5px;
+    color: white;
+    font-weight: 400;
+    height: 30px;
+    width: 15%;
+    background-color:grey;
+    border: none;
+}
+.delete{
+    margin-right: 5px;
+    color: white;
+    background-color: rgb(19, 103, 142);
+    font-weight: 400;
+    height: 30px;
+    width: 15%;
+  
+    border: none;
+}

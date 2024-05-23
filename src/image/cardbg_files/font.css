@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'Helvetica Neue Light';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Helvetica Neue LT Std 45 Light'), url('../font/HelveticaNeueLTStd-Lt.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Helvetica Neue Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Helvetica Neue LT Std medium'), url('../font/HelveticaNeueLTStd-Md.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Helvetica Neue Roman';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Helvetica Neue LT Std roman'), url('../font/HelveticaNeueLTStd-Roman.woff') format('woff');
+}

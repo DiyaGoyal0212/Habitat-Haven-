@@ -1,38 +1,58 @@
-.App {
-  text-align: center;
+.card1{
+    border:0.2px black solid;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+    text-align: center;
+    margin-right: 10px;
+    background-color: white;
+    margin-left: 30px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.b1{
+    display: flex;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+p{
+    color:red;
 }
+.im{
+    width: 100px;
+    height: 100px;
+    background-color: white;
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.box{
+    /* display: flex;
+    flex-wrap: wrap; */
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 20px;
+    background-image: url("./image/cardbg1.jpg");
+    background-size: cover;
+    height: 700px;
 }
+.card1:hover{
+    transform: scale(1.02);
+    transition: 0.5s;
+    box-shadow: 5px 5px 5px black;
+    
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+}
+@media screen and (max-width: 500px) {
+    .b1{
+        display: inline-block;
+    }
+    .card1{
+        width: 250px;
+    }
+
+    
+}
+@media screen and (max-width: 650px) {
+    .b1{
+        display: inline-block;
+    }
+    
 }

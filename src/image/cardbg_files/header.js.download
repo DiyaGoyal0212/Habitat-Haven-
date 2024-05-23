@@ -1,0 +1,351 @@
+jQuery(function(){			
+	jQuery('.mobile-ham').on('click', function(){
+		jQuery(this).toggleClass('active');
+		jQuery('.mobile-nav').toggleClass('active');
+	});
+
+	jQuery(window).scroll(function() {
+	    var scroll = jQuery(window).scrollTop();
+	   	// console.log(scroll);
+
+	   	if(scroll > 150){
+	   		$('header').addClass('select');
+	   	}else {
+	   		$('header').removeClass('select');
+	   	}
+	   	
+	});
+
+	
+
+	// ##############################################################################################################################
+	// Drop Down
+		// Source: https://gist.github.com/k-gun/c2ea7c49edf7b757fe9561ba37cb19ca
+		// .classList() Polyfill for older browser - IE9 again...
+		!function(){function t(t){this.element=t}var e=function(t){return RegExp("(^| )"+t+"( |jQuery)")},n=function(t,e,n){for(var i=0;i<t.length;i++)e.call(n,t[i])}
+		t.prototype={add:function(){n(arguments,function(t){this.contains(t)||(this.element.className+=" "+t)},this)},remove:function(){n(arguments,function(t){this.element.className=this.element.className.replace(e(t),"")},this)},toggle:function(t){return this.contains(t)?(this.remove(t),!1):(this.add(t),!0)},contains:function(t){return e(t).test(this.element.className)},replace:function(t,e){this.remove(t),this.add(e)}},"classList"in Element.prototype||Object.defineProperty(Element.prototype,"classList",{get:function(){return new t(this)}}),window.DOMTokenList&&null==DOMTokenList.prototype.replace&&(DOMTokenList.prototype.replace=t.prototype.replace)}()
+
+		// .closest() Polyfill for browsers that supports document.querySelectorAll() - IE9 again...
+		if (window.Element && !Element.prototype.closest) {
+		    Element.prototype.closest =
+		    function(s) {
+		        var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+		            i,
+		            el = this;
+		        do {
+		            i = matches.length;
+		            while (--i >= 0 && matches.item(i) !== el) {};
+		        } while ((i < 0) && (el = el.parentElement));
+		        return el;
+		    };
+		}
+
+		// Dropdown Select Toggle
+		var activeClass = "is-active"
+		var forEach = function (array, callback, scope) {
+			for (var i = 0; i < array.length; i++) {
+				callback.call(scope, i, array[i]); // passes back stuff we need from the array
+			}
+		};
+		forEach(document.querySelectorAll(".dropdown_list .dropdown"), function (index, value) {
+			value.addEventListener('click', function() {
+		        //console.log(value.classList);
+		        if ( !value.classList.contains(activeClass) ) {
+		            var el = document.querySelectorAll(".dropdown_list .dropdown");
+		            var i; for (i = 0; i < el.length; i++) {
+		                el[i].classList.remove(activeClass);
+		            }
+		            value.classList.toggle(activeClass);
+		        } else
+		        if ( value.classList.contains(activeClass) ) {
+		            value.classList.remove(activeClass);
+		        }
+			})
+		});
+		document.addEventListener('click', function(e) {
+			// Dropdown Select Toggle
+			var el = document.querySelectorAll(".dropdown_list .dropdown")
+			var e=e? e : window.event;
+		    var event_element=e.target? e.target : e.srcElement;
+			if (!event_element.closest(".dropdown_list")){
+				//console.log(event_element.closest(".dropdown_list"));
+				var i; for (i = 0; i < el.length; i++) {
+					el[i].classList.remove(activeClass);
+				}
+			}
+	  		
+		}, false);
+
+	// ###############################################################################################################################
+
+
+	// ************************************************************
+	// Select-box
+		jQuery('select').selectBox();
+		//  $.fn.selectBox = function(method) {
+    
+		//     // Methods
+		//     if (typeof method == 'string') {      
+		//       if (method == 'update') {
+		//         this.each(function() {
+		//           var $select = $(this);
+		//           var $dropdown = $(this).next('.select-box');
+		//           var open = $dropdown.hasClass('open');
+		          
+		//           if ($dropdown.length) {
+		//             $dropdown.remove();
+		//             create_nice_select($select);
+		            
+		//             if (open) {
+		//               $select.next().trigger('click');
+		//             }
+		//           }
+		//         });
+		//       } else if (method == 'destroy') {
+		//         this.each(function() {
+		//           var $select = $(this);
+		//           var $dropdown = $(this).next('.select-box');
+		          
+		//           if ($dropdown.length) {
+		//             $dropdown.remove();
+		//             $select.css('display', '');
+		//           }
+		//         });
+		//         if ($('.select-box').length == 0) {
+		//           $(document).off('.nice_select');
+		//         }
+		//       } else {
+		//         console.log('Method "' + method + '" does not exist.')
+		//       }
+		//       return this;
+		//     }
+		      
+		//     // Hide native select
+		//     this.hide();
+		    
+		//     // Create custom markup
+		//     this.each(function() {
+		//       var $select = $(this);
+		      
+		//       if (!$select.next().hasClass('select-box')) {
+		//         create_nice_select($select);
+		//       }
+		//     });
+		    
+		//     function create_nice_select($select) {
+		//       $select.after($('<div></div>')
+		//         .addClass('select-box')
+		//         .addClass($select.attr('class') || '')
+		//         .addClass($select.attr('disabled') ? 'disabled' : '')
+		//         .attr('tabindex', $select.attr('disabled') ? null : '0')
+		//         .html('<span class="current"></span><ul class="list"></ul>')
+		//       );
+		        
+		//       var $dropdown = $select.next();
+		//       var $options = $select.find('option');
+		//       var $selected = $select.find('option:selected');
+		      
+		//       $dropdown.find('.current').html($selected.data('display') || $selected.text());
+		      
+		//       $options.each(function(i) {
+		//         var $option = $(this);
+		//         var display = $option.data('display');
+
+		//         $dropdown.find('ul').append($('<li></li>')
+		//           .attr('data-value', $option.val())
+		//           .attr('data-display', (display || null))
+		//           .addClass('option' +
+		//             ($option.is(':selected') ? ' selected' : '') +
+		//             ($option.is(':disabled') ? ' disabled' : ''))
+		//           .html($option.text())
+		//         );
+		//       });
+		//     }
+		    
+		//     /* Event listeners */
+		    
+		//     // Unbind existing events in case that the plugin has been initialized before
+		//     jQuery(document).off('.nice_select');
+		    
+		//     // Open/close
+		//     jQuery(document).on('click.nice_select', '.select-box', function(event) {
+		//       var $dropdown = jQuery(this);
+		      
+		//       jQuery('.select-box').not($dropdown).removeClass('open');
+		//       $dropdown.toggleClass('open');
+		      
+		//       if ($dropdown.hasClass('open')) {
+		//         $dropdown.find('.option');  
+		//         $dropdown.find('.focus').removeClass('focus');
+		//         $dropdown.find('.selected').addClass('focus');
+		//       } else {
+		//         $dropdown.focus();
+		//       }
+		//     });
+		    
+		//     // Close when clicking outside
+		//     jQuery(document).on('click.nice_select', function(event) {
+		//       if (jQuery(event.target).closest('.select-box').length === 0) {
+		//         jQuery('.select-box').removeClass('open').find('.option');  
+		//       }
+		//     });
+		    
+		//     // Option click
+		//     jQuery(document).on('click.nice_select', '.select-box .option:not(.disabled)', function(event) {
+		//       var $option = jQuery(this);
+		//       var $dropdown = $option.closest('.select-box');
+		      
+		//       $dropdown.find('.selected').removeClass('selected');
+		//       $option.addClass('selected');
+		      
+		//       var text = $option.data('display') || $option.text();
+		//       $dropdown.find('.current').text(text);
+		      
+		//       $dropdown.prev('select').val($option.data('value')).trigger('change');
+		//     });
+
+		//     // Keyboard events
+		//     jQuery(document).on('keydown.nice_select', '.select-box', function(event) {    
+		//       var $dropdown = jQuery(this);
+		//       var $focused_option = jQuery($dropdown.find('.focus') || $dropdown.find('.list .option.selected'));
+		      
+		//       // Space or Enter
+		//       if (event.keyCode == 32 || event.keyCode == 13) {
+		//         if ($dropdown.hasClass('open')) {
+		//           $focused_option.trigger('click');
+		//         } else {
+		//           $dropdown.trigger('click');
+		//         }
+		//         return false;
+		//       // Down
+		//       } else if (event.keyCode == 40) {
+		//         if (!$dropdown.hasClass('open')) {
+		//           $dropdown.trigger('click');
+		//         } else {
+		//           var $next = $focused_option.nextAll('.option:not(.disabled)').first();
+		//           if ($next.length > 0) {
+		//             $dropdown.find('.focus').removeClass('focus');
+		//             $next.addClass('focus');
+		//           }
+		//         }
+		//         return false;
+		//       // Up
+		//       } else if (event.keyCode == 38) {
+		//         if (!$dropdown.hasClass('open')) {
+		//           $dropdown.trigger('click');
+		//         } else {
+		//           var $prev = $focused_option.prevAll('.option:not(.disabled)').first();
+		//           if ($prev.length > 0) {
+		//             $dropdown.find('.focus').removeClass('focus');
+		//             $prev.addClass('focus');
+		//           }
+		//         }
+		//         return false;
+		//       // Esc
+		//       } else if (event.keyCode == 27) {
+		//         if ($dropdown.hasClass('open')) {
+		//           $dropdown.trigger('click');
+		//         }
+		//       // Tab
+		//       } else if (event.keyCode == 9) {
+		//         if ($dropdown.hasClass('open')) {
+		//           return false;
+		//         }
+		//       }
+		//     });
+
+		//     // Detect CSS pointer-events support, for IE <= 10. From Modernizr.
+		//     var style = document.createElement('a').style;
+		//     style.cssText = 'pointer-events:auto';
+		//     if (style.pointerEvents !== 'auto') {
+		//       jQuery('html').addClass('no-csspointerevents');
+		//     }
+		    
+		//     return this;
+
+		// };
+	// ************************************************************
+	
+
+
+	//SignIn popup
+	// jQuery('.access-block .user').on('click', function(){
+	// 	var isLoggedIn = jQuery('#isLoggedIn').val();
+		
+	// 	if(isLoggedIn == 1)
+	// 	{
+	// 		jQuery('.user .user-menu').toggle();
+	// 	}
+	// 	else
+	// 	{
+	// 		jQuery('.signIn-popup').fadeIn();
+	// 		jQuery('body').addClass('prevent-scroll');
+	// 	}
+	// });
+
+	jQuery('.signIn-popup .close-signIn, .bg-layer').on('click', function(){
+		jQuery('.signIn-popup').fadeOut();
+		jQuery('body').removeClass('prevent-scroll');
+	});
+
+
+	//open location popup
+	jQuery(document).on('click','.help-line .open-loc', function(){
+		jQuery('.location-popup').fadeIn();
+		jQuery('body').addClass('prevent-scroll');
+	});
+
+	jQuery(document).on('click','.bg-layer', function(){
+		var cookie_name = 'current_city';
+		var checklocation = getCookieGodrej(cookie_name);
+		var locationName = "Mumbai";
+		if(checklocation == null)
+		{	
+			setCookieGodrej(cookie_name,locationName,1);
+			loc = locationName.toLowerCase();
+			var pageURL = $(location).attr("href");
+		    jQuery('.mobile-nav').find('.help-line .sub-menu .open-loc').text(locationName);
+		    //for mobile view location popup
+		    var params = new URLSearchParams(window.location.search);
+		  	var device_type = params.get("device_type");
+		  	if(device_type == 'app'){
+		  		if (typeof Locationpopup !== 'undefined') {
+			      Locationpopup.postMessage(locationName);
+			    } else {
+			      console.debug('not running inside a Flutter webview');
+			    }
+		  	}
+		  	if(pageURL !== '#' && pageURL !== "/" && pageURL !== undefined && pageURL !== 'null'){
+      			if(pageURL.search(loc) <= 1 ){
+          				var logArr = pageURL.split('/');
+            		    logArr.splice(3, 0, loc);
+            			var newlogo = logArr.join("/");
+            			//newlogo = newlogo.slice(0, -1);
+           			window.location.replace(newlogo);
+    			 }
+    		}
+		    //location.reload();
+		}
+		jQuery('.location-popup').fadeOut();
+		jQuery('body').removeClass('prevent-scroll');
+	});
+
+	//toast message
+	jQuery.fn.toast = function(action) {
+		if (action === 'show') {
+			var $this = $(this);
+			$this.addClass("show");
+			setTimeout(function(){
+				console.log($this);
+				$this.removeClass("show");
+			},5000);
+		}
+
+		jQuery('.toast .icon ').on('click', function(){
+			$this.removeClass("show");
+		});
+
+	    
+	};
+
+});

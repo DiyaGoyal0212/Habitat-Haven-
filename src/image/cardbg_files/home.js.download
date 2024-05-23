@@ -1,0 +1,131 @@
+jQuery(function(){
+
+			let len = jQuery('.stories-slider .swiper-wrapper .swiper-slide').length;
+	        if(len <= 3) {
+	            jQuery('.customer-stories .head .nav-btn').hide();
+	        } else {
+	            jQuery('.customer-stories .head .nav-btn').show();
+	        }
+
+			var swiper = new Swiper('.banner-slider', {
+				navigation: {
+					nextEl: '.swiper-button-next',
+					prevEl: '.swiper-button-prev',
+				},
+				autoplay: {
+			    	delay: 3000,
+			  	},
+			  	loop : true,
+			});
+			
+			var swiper2 = new Swiper('.stories-slider', {
+			    slidesPerView: 3,
+			    spaceBetween: 60,
+			    navigation: {
+			        nextEl: '.stories-next',
+			        prevEl: '.stories-prev',
+			    },
+
+			    breakpoints: {
+			        834: {
+			            slidesPerView: 3,
+			            spaceBetween: 15,
+			            pagination: {
+			                el: '.swiper-pagination',
+			            },
+			        },
+			        480: {
+			            slidesPerView: 1,
+			            spaceBetween: 0,
+			            pagination: {
+			                el: '.swiper-pagination',
+			            },
+			        },
+			    }
+			});
+
+			var swiper3 = new Swiper('.explore', {
+			    slidesPerView: 4,
+			    spaceBetween: 60,
+			    autoplay: {
+			    	delay: 3000,
+			  	},
+			  	loop : true,
+			    navigation: {
+			        nextEl: '.stories-next',
+			        prevEl: '.stories-prev',
+			    },
+
+			    breakpoints: {
+			        834: {
+			            slidesPerView: 4,
+			            spaceBetween: 15,
+			            pagination: {
+			                el: '.swiper-pagination',
+			            },
+			        },
+			        480: {
+			            slidesPerView: 1.2,
+			            spaceBetween: 10,
+			            pagination: {
+			                el: '.swiper-pagination',
+			            },
+			        },
+			    }
+			});
+		});
+
+
+function isNumber(evt) {
+      	var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    } 
+	jQuery(function(){
+		jQuery('#get-in-touch').on('click', function() {
+			var number=jQuery('#number').val();
+			var phoneno = /^(\+[0-9]{1,3}(\s)?|\([0]\)(\s)?)?(\([0]\)\s?|[0])?[0-9\s-]{10,15}$/;
+			var flag = 0;
+		//if (!phoneno.test(number)) {
+        //	alert("It is not valid mobile number.input 10 digits number!");
+        //	return false;
+        //}//
+        if(!number){
+ 		jQuery('#phone_error').text('Please Enter Mobile Number').show();
+   		flag = 1;
+		}
+		else if(number){
+		if(!phoneno.test(number)){
+ 		jQuery('#phone_error').text('Invalid mobile number, enter 10 digit number!').show();
+  	 	 flag = 1;
+		}
+	}
+		if(flag==1){
+     	return;
+    	}
+
+    		if (flag == 0) {
+        	jQuery.ajax({
+        		url  : '/pagelayout/home/getintouch',
+        		type : 'POST',
+        		data : {'number':number},
+        		success : function(response){
+        			var obj = jQuery.parseJSON(response);
+        			if(obj.error==0){
+        				var toastmsg = obj.message;
+                         toastmsgfun(toastmsg);
+        			}else{
+                          var toastmsg = obj.message;
+                          toastmsgfun(toastmsg);
+                     	}
+                     	console.log(obj);
+        			//alert('success');
+        		}
+        	}); 
+        }
+});
+});
+function removeErrorsPhone(e){
+jQuery(e).siblings(".error-text").text('');
+}

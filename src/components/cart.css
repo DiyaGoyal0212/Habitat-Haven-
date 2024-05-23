@@ -1,0 +1,22 @@
+.cart span{
+    margin: 20px;
+
+}
+img{
+    width: 100px;
+}
+.cart{
+    margin-top: 30px;
+   
+}
+.cart button{
+    background-color: rgb(174, 149, 135);
+    width: 50px;
+    color: white;
+}
+.pay{
+    background-color: rgb(174, 149, 135);
+    width: 200px;
+    border: 2px black solid;
+   
+}

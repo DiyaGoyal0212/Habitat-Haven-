@@ -1,0 +1,110 @@
+jQuery(document).ready(() => {
+
+    window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '660672991732938', // FB App ID
+          cookie     : true,  // enable cookies to allow the server to access the session
+          xfbml      : true,  // parse social plugins on this page
+          version    : 'v2.8' // use graph api version 2.8
+        });
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    let fbLogin = () => {
+        FB.login( response => {
+            if (response.authResponse) {
+                var accessToken = response.authResponse.accessToken
+                // getFbUserData(accessToken)
+
+                let userData = {
+                    accessToken : accessToken,
+                    logintype : "facebook"
+                }
+
+                jQuery.ajax({
+                    type : "POST",
+                    // url : "/customerlogin/sociallogin/save",
+                    url : "/SocialLogin/login.php",
+                    data : userData,
+                    dataType : "json",
+                    beforeSend : () => {
+                        jQuery(".loader-wrap").fadeIn()
+                        if (jQuery(document).find(".social-signIn").hasClass("popup-social")) {
+                            jQuery(".signIn-popup").fadeOut()
+                            jQuery("body").removeClass("prevent-scroll")
+                        }
+                    },
+                    success : response => {
+                        if (response.error == 0) {
+                            if (jQuery(document).find(".social-signIn").hasClass("popup-social")) {
+                                window.location.reload()
+                            } else {
+                                location.href = "/customer/account/index"    
+                            }
+                        } else {
+                            console.log(response.message)
+                        }
+                    },
+                    complete : () => jQuery(".loader-wrap").fadeOut()
+                })
+            } else {
+                console.log("error")
+            }
+        }, {scope: 'email'})
+    }
+
+    // let getFbUserData = (accessToken) => {
+    //     FB.api('/me', {locale: 'en_US', fields: 'first_name,last_name,email'},
+    //     response => {
+    //         if (response.email) {
+    //             let userData = {
+    //                 firstname : response.first_name,
+    //                 lastname : response.last_name,
+    //                 email : response.email,
+    //                 accessToken : accessToken,
+    //                 logintype : "facebook"
+    //             }
+
+    //             jQuery.ajax({
+    //                 type : "POST",
+    //                 // url : "/customerlogin/sociallogin/save",
+    //                 url : "/SocialLogin/login.php",
+    //                 data : userData,
+    //                 dataType : "json",
+    //                 beforeSend : () => {
+    //                     jQuery(".loader-wrap").fadeIn()
+    //                     if (jQuery(document).find(".social-signIn").hasClass("popup-social")) {
+    //                         jQuery(".signIn-popup").fadeOut()
+    //                         jQuery("body").removeClass("prevent-scroll")
+    //                     }
+    //                 },
+    //                 success : response => {
+    //                     if (response.error == 0) {
+    //                         if (jQuery(document).find(".social-signIn").hasClass("popup-social")) {
+    //                             window.location.reload()
+    //                         } else {
+    //                             location.href = "/customer/account/index"    
+    //                         }
+    //                     } else {
+    //                         console.log(response.message)
+    //                     }
+    //                 },
+    //                 complete : () => jQuery(".loader-wrap").fadeOut()
+    //             })  
+    //         }
+    //     })
+    // }
+
+    jQuery("#facebook").on({
+        click : e => {
+            fbLogin()
+        }
+    })
+})

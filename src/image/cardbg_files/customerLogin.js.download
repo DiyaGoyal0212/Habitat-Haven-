@@ -1,0 +1,775 @@
+jQuery(document).ready(() => {
+
+    let baseUrl = jQuery("#hidden-base-url").val()
+    
+    showCustomerDetails();
+
+    jQuery(document).on({
+        click : () => {
+            let isLoggedIn = jQuery("#isLoggedIn").val()
+            if(isLoggedIn == 1) {
+                jQuery('.user .user-menu').toggle();
+                jQuery(".signIn-popup").hide()
+                jQuery("body").removeClass("prevent-scroll")
+            } else {
+                if (jQuery(".signIn-popup").length) {
+                    jQuery(".signIn-popup").fadeIn()
+                    jQuery(".popup-social").fadeIn()
+                    jQuery(".signIn-popup").find(".main-title").text("Sign-in to")
+                    jQuery(".signIn-block").show()
+                    jQuery(".registration-block").hide()
+                    jQuery(".forgetpwd-block").hide()
+                    jQuery(".signinPhone-block").hide()
+                    jQuery(".resetpwd-block").hide()
+                    jQuery('body').addClass('prevent-scroll')    
+                } else {                    
+                    jQuery('body').removeClass('prevent-scroll')    
+                }
+            }
+        }
+    },".access-block .user")
+
+    jQuery(".user-signIn-form").on({
+        click : e => {
+            let error = 0
+            let user_email = jQuery("#login-user-email").val().trim()
+            let user_password = jQuery("#login-user-password").val().trim()
+
+            if(user_email == '') {
+                jQuery("#login-user-email").next(".error-note").remove()
+                jQuery("#login-user-email").after("<span class='error-note' style='display:block;'>Please Enter Email ID</span>")
+                jQuery("#login-user-email").parents(".form-input").addClass("error")
+                error = 1
+            } else if (!validateEmail(user_email)) {
+                jQuery("#login-user-email").next(".error-note").remove()
+                jQuery("#login-user-email").after("<span class='error-note' style='display:block;'>Please Enter Valid Email ID</span>")
+                jQuery("#login-user-email").parents(".form-input").addClass("error")
+                error = 1       
+            } else if (user_email > 50) {
+                jQuery("#login-user-email").next(".error-note").remove()
+                jQuery("#login-user-email").after("<span class='error-note' style='display:block;'>Email should not exceeds 50 characters</span>")
+                jQuery("#login-user-email").parents(".form-input").addClass("error")
+                error = 1           
+            }
+
+            if(user_password == '') {
+                jQuery("#login-user-password").next(".error-note").remove()
+                jQuery("#login-user-password").after("<span class='error-note' style='display:block;'>Please Enter Password</span>")
+                jQuery("#login-user-password").parents(".form-input").addClass("error")
+                error = 1   
+            }
+
+            if(error == 0) {
+                jQuery.ajax({
+                    url : "/customer/account/loginpost",
+                    type : "POST",
+                    data : {username : user_email, password : user_password, forLoginWithoutOtp : 1},
+                    dataType : "json",
+                    beforeSend : () => jQuery(".loader-wrap").fadeIn() ,
+                    success : response => {
+                        if(response.error == 0) {                            
+                            if (jQuery(e.target).parents(".user-signIn-form").hasClass("sign-in-page")) {                                
+                                window.location.href = "/customer/account/index"
+                            } else {
+                                window.location.reload()    
+                            }
+                        } else {
+                            toastmsgfun(response.message)
+                        }
+                    },
+                    complete : () => jQuery(".loader-wrap").fadeOut()
+                });   
+            }
+        }
+    },".signIn-btn")
+
+    jQuery(".user-signIn-form").on({
+        keyup : e => {
+            if(e.keyCode == 13) {
+                jQuery(e.currentTarget).find(".signIn-btn").trigger("click")
+            }
+        }
+    });
+
+    jQuery('#user-pan-no').keyup(function() {
+        this.value = this.value.toLocaleUpperCase();
+    });
+
+    jQuery(".user-signIn-form").on({
+        focus : e => {
+            jQuery(e.currentTarget).next(".error-note").remove()
+            jQuery(e.currentTarget).parents(".form-input").removeClass("error")
+        }
+    },"input");
+
+    jQuery(".user-reg-form").on({
+        click : e => {
+            let error = 0
+            let fullname = jQuery("#username").val().trim()
+            let mobileno = jQuery("#user-mobile-no").val().trim()
+            let panno = jQuery("#user-pan-no").val().trim()
+            let emailid = jQuery("#user-email").val().trim()
+            let password = jQuery("#user-password").val().trim()
+            let confirmedpassword = jQuery("#user-confirmed-password").val().trim()
+            let firstname = ""
+            let lastname = ""
+
+            if(fullname == '') {
+                jQuery("#username").next(".error-note").remove()
+                jQuery("#username").after("<span class='error-note'>Please Enter Full Name</span>")
+                jQuery("#username").parents(".form-input").addClass("error")
+                error = 1
+            } else if (fullname.length > 35) {
+                jQuery("#username").next(".error-note").remove()
+                jQuery("#username").after("<span class='error-note'>Name should not exceeds 35 characters</span>")
+                jQuery("#username").parents(".form-input").addClass("error")
+                error = 1
+            } else {
+                let temp = fullname.split(" ")
+                if(temp.length <= 1) {
+                    jQuery("#username").next(".error-note").remove()
+                    jQuery("#username").after("<span class='error-note'>Please Enter Valid Full Name</span>")
+                    jQuery("#username").parents(".form-input").addClass("error")
+                    error = 1
+                } else {
+                    firstname = temp[0]
+                    lastname = temp.slice(1,temp.length).join(" ").trim().toString()
+                } 
+            }
+
+            if (mobileno == '') {
+                jQuery("#user-mobile-no").next(".error-note").remove()
+                jQuery("#user-mobile-no").after("<span class='error-note'>Please Enter Contact Number</span>")
+                jQuery("#user-mobile-no").parents(".form-input").addClass("error")
+                error = 1;
+            } else if (!IsMobileNumber(mobileno)) {
+                jQuery("#user-mobile-no").next(".error-note").remove()
+                jQuery("#user-mobile-no").after("<span class='error-note'>Please Enter Valid Contact Number</span>")
+                jQuery("#user-mobile-no").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if(panno == ''){
+                jQuery("#user-pan-no").next(".error-note").remove()
+                jQuery("#user-pan-no").after("<span class='error-note'>Please Enter Pan Number</span>")
+                jQuery("#user-pan-no").parents(".form-input").addClass("error")
+                error = 1;
+            } else if (!IsPanNumber(panno)) {
+                jQuery("#user-pan-no").next(".error-note").remove()
+                jQuery("#user-pan-no").after("<span class='error-note'>Please Enter Valid Pan Number</span>")
+                jQuery("#user-pan-no").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if(emailid == '') {
+                jQuery("#user-email").next(".error-note").remove()
+                jQuery("#user-email").after("<span class='error-note'>Please Enter Email ID</span>")
+                jQuery("#user-email").parents(".form-input").addClass("error")
+                error = 1
+            } else if (!validateEmail(emailid)) {
+                jQuery("#user-email").next(".error-note").remove()
+                jQuery("#user-email").after("<span class='error-note'>Please Enter Valid Email ID</span>")
+                jQuery("#user-email").parents(".form-input").addClass("error")
+                error = 1
+            } else if (emailid.length > 50) {
+                jQuery("#user-email").next(".error-note").remove()
+                jQuery("#user-email").after("<span class='error-note'>Email should not exceeds 50 characters</span>")
+                jQuery("#user-email").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if(password == '') {
+                jQuery("#user-password").next(".error-note").remove()
+                jQuery("#user-password").after("<span class='error-note'>Please Enter Password</span>")
+                jQuery("#user-password").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if(confirmedpassword == '') {
+                jQuery("#user-confirmed-password").next(".error-note").remove()
+                jQuery("#user-confirmed-password").after("<span class='error-note'>Please Enter Confirmed Password</span>")
+                jQuery("#user-confirmed-password").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if (password != '' && confirmedpassword != '') {
+                if(password != confirmedpassword) {
+                    jQuery("#user-confirmed-password").next(".error-note").remove()
+                    jQuery("#user-confirmed-password").after("<span class='error-note'>Password Doesn't Match</span>")
+                    jQuery("#user-confirmed-password").parents(".form-input").addClass("error")
+                    error = 1   
+                } else if (!validatePassword(password)) {
+                    toastmsgfun("Invalid Password. Password should have min 6 characters and atleast 1 number")
+                    error = 1
+                }
+            }
+            
+            if(error == 0) {
+                jQuery.ajax({
+                    type : "POST",
+                    url : "/customerlogin/customer/isexist",
+                    data : {email : emailid, contactnumber : mobileno, pannumber : panno},
+                    dataType : "json",
+                    beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                    success : response => {
+                        if (response.error == 0) {
+                            if (jQuery(e.target).hasClass("page")) {
+                                var userData = {
+                                    u_email : emailid,
+                                    u_firstname : firstname,
+                                    u_lastname : lastname,
+                                    u_password : password,
+                                    u_telephone : mobileno,
+                                    u_panno : panno,
+                                    u_is_subscribed : jQuery('#is-subscribe').is(':checked') ? 1 : 0
+                                };
+                                localStorage.setItem("register-user", JSON.stringify(userData));
+                                location.href = "/customerlogin/phonelogin/index/register/1";    
+                            } else {
+                                jQuery("#hidden-user-email").val(emailid)
+                                jQuery("#hidden-user-contact-number").val(mobileno)
+                                jQuery("#hidden-user-pan-number").val(panno)
+                                jQuery("#hidden-user-firstname").val(firstname)
+                                jQuery("#hidden-user-lastname").val(lastname)
+                                jQuery("#hidden-user-password").val(password)
+                                jQuery("#hidden-user-subscribe").val(jQuery('#is-subscribe').is(':checked') ? 1 : 0)
+                                jQuery(".signinphone-btn").addClass("register-user")
+                                jQuery(".phoneinput").hide()
+                                jQuery(".otp-title").find("span").text(mobileno)
+                                jQuery(".otp-title").show()
+                                jQuery(".otp-input-group").show()
+                                jQuery(".otp-note").show()
+                                jQuery(".signinPhone-block").show()
+                                jQuery(".registration-block").hide()
+                                jQuery(".social-signIn").hide()
+                                jQuery(".signinPhone-block").find(".signIn-option").hide()
+                            }
+                        } else {
+                            toastmsgfun(response.message)
+                        }
+                    },
+                    complete : () => jQuery(".loader-wrap").fadeOut()
+                });    
+            }
+        }
+    },".signup-btn")
+
+    jQuery(".user-reg-form").on({
+        input : e => {
+            var pattern = /^[a-zA-Z\s]+$/;
+            if (!pattern.test(jQuery(e.currentTarget).val())) {             
+                var txtValue = jQuery(e.currentTarget).val();
+                var desired = txtValue.replace(/[^\A-Za-z\s]/gi, '');
+                jQuery(e.currentTarget).val(desired);
+            }
+        }
+    }, "#username")
+
+    jQuery(".user-reg-form").on({
+        input : e => {
+            var pattern = /^[0-9]+$/;
+            if (!pattern.test(jQuery(e.currentTarget).val())) {             
+                var txtValue = jQuery(e.currentTarget).val();
+                var desired = txtValue.replace(/[^0-9]/g, '');
+                jQuery(e.currentTarget).val(desired);
+            }
+        }
+    }, "#user-mobile-no")
+
+    jQuery(".user-reg-form").on({
+        keyup : e => {
+            if(e.keyCode == 13) {
+                jQuery(e.currentTarget).find(".signup-btn").trigger("click")
+            }
+        }
+    })
+
+    jQuery(".user-phone-form").on({
+        input : e => {
+            var pattern = /^[0-9]+$/;
+            if (!pattern.test(jQuery(e.currentTarget).val())) {             
+                var txtValue = jQuery(e.currentTarget).val();
+                var desired = txtValue.replace(/[^0-9]/g, '');
+                jQuery(e.currentTarget).val(desired);
+            }
+        }
+    }, "#number-for-otp")
+
+    jQuery(".user-reg-form").on({
+        focus : e => {
+            jQuery(e.currentTarget).next(".error-note").remove()
+            jQuery(e.currentTarget).parents(".form-input").removeClass("error")
+        }
+    },"input")
+
+    jQuery(".user-phone-form").on({
+        click : e => {
+            if (jQuery(".user-phone-form").find(".phoneinput").is(":visible")) {
+                let error = 0
+                let contactNumber = jQuery("#number-for-otp").val().trim()
+                if (contactNumber == '') {
+                    jQuery("#number-for-otp").next(".error-note").remove()
+                    jQuery("#number-for-otp").after("<span class='error-note'>Please Enter Contact Number</span>")
+                    jQuery("#number-for-otp").parents(".form-input").addClass("error")
+                    error = 1
+                } else if (!IsMobileNumber(contactNumber)) {
+                    jQuery("#number-for-otp").next(".error-note").remove()
+                    jQuery("#number-for-otp").after("<span class='error-note'>Please Enter Valid Contact Number</span>")
+                    jQuery("#number-for-otp").parents(".form-input").addClass("error")
+                    error = 1
+                } 
+
+                if (error == 0) {
+                    jQuery.ajax({
+                        url : "/customer/account/loginpost",
+                        type : "POST",
+                        data : {contactnumber : contactNumber, checkContactNumber : 1, returnUser : 1},
+                        dataType : "json",
+                        beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                        success : response => {
+                            if (response.error == 0) {
+                                jQuery("#hidden-user-email").val(response.email)
+                                jQuery("#hidden-user-contact-number").val(response.contactnumber)
+                                jQuery(".phoneinput").hide()
+                                jQuery(".otp-title").find("span").text(contactNumber)
+                                jQuery(".otp-title").show()
+                                jQuery(".otp-input-group").show()
+                                jQuery(".otp-note").show()
+                            } else {
+                                jQuery("#number-for-otp").next(".error-note").remove()
+                                jQuery("#number-for-otp").after("<span class='error-note'>"+response.message+"</span>")
+                                jQuery("#number-for-otp").parents(".form-input").addClass("error")
+                            }
+                        },
+                        complete : () => jQuery(".loader-wrap").fadeOut()
+                    })
+                }
+            } else {
+                let error = 0
+                inputFields = jQuery(".otp-input-group input")
+                inputFields.each((index,element) => {
+                    if (jQuery(element).val() == '') {
+                        error = 1
+                    }
+                })
+
+                if(error == 1) {
+                    jQuery(".otp-input-group").addClass("error")
+                }
+                if(error == 0) {
+                    let enteredOtp = ''
+                    inputFields.each((index,element) => {
+                        enteredOtp += jQuery(element).val()
+                    })
+                    
+                    let userOtp = enteredOtp.trim()
+                    let userEmail = jQuery("#hidden-user-email").val()
+                    let userContactNumber = jQuery("#hidden-user-contact-number").val()
+                    let userPanNumber = jQuery("#hidden-user-pan-number").val()
+                    let userFirstname = jQuery("#hidden-user-firstname").val()
+                    let userLastname = jQuery("#hidden-user-lastname").val()
+                    let userPassword = jQuery("#hidden-user-password").val()
+                    let formKey = jQuery("#hidden-form-key").val()
+                    let isSubscribed = jQuery("#hidden-user-subscribe").val()
+
+                    if (jQuery(e.currentTarget).hasClass("register-user")) {                        
+                        jQuery.ajax({
+                            type : "POST",
+                            url : "/customerlogin/validate/registerotp",
+                            data : {otp : userOtp, email : userEmail, contactnumber : userContactNumber, pannumber : userPanNumber},
+                            dataType : "json",
+                            beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                            success : response => {
+                                if (response.error == 0) {
+                                    let customerData = {
+                                        form_key : formKey,
+                                        firstname : userFirstname,
+                                        lastname : userLastname,
+                                        mobile : userContactNumber,
+                                        pan : userPanNumber,
+                                        email : userEmail,
+                                        password : userPassword,
+                                        is_subscribed : isSubscribed
+                                    }
+
+                                    jQuery.ajax({
+                                        url : '/customer/account/createpost',
+                                        type : 'POST',
+                                        data : customerData,
+                                        dataType : 'json',                                        
+                                        success : response => {
+                                            if (response.error == 0) {
+                                                toastmsgfun(response.message)
+                                                if (jQuery(e.target).parents(".user-phone-form").hasClass("page")) {
+                                                    localStorage.removeItem("register-user");                                                                                                        
+                                                } else {
+                                                    jQuery(".signIn-popup").find(".head").show()
+                                                    jQuery(".signIn-popup").find(".social-signIn").show()
+                                                    jQuery(".signIn-popup").find(".signIn-block").show()
+                                                    jQuery(".signinPhone-block").hide()
+                                                    jQuery(".signinphone-btn").removeClass("register-user")
+                                                    jQuery(".signIn-popup").hide()
+                                                    jQuery(".signIn-box").find(".head").find(".title").text("Signin to")
+                                                    jQuery('body').removeClass('prevent-scroll')    
+                                                }
+                                            } else {
+                                                toastmsgfun(response.message)
+                                            }
+                                        },
+                                        complete : () => jQuery(".loader-wrap").fadeOut()
+                                    });
+                                } else {
+                                    toastmsgfun(response.message);
+                                }
+                            },
+                            complete : () => jQuery(".loader-wrap").fadeOut()
+                        })
+                    } else {
+                        jQuery.ajax({
+                            url : "/customer/account/loginpost",
+                            type : "POST",
+                            data : {otpvalue : userOtp, email : userEmail, contact : userContactNumber, forotp : 1},
+                            dataType : 'json',
+                            beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                            success : response => {
+                                if (response.error == 0) {     
+                                    if (jQuery(e.target).parents(".user-phone-form").hasClass("page")) {
+                                        window.location.href = "/customer/account/index"
+                                    } else {
+                                        window.location.reload()   
+                                    }                            
+                                } else {
+                                    jQuery(".otp-input-group").find(".error-note").remove()
+                                    jQuery(".otp-input-group").append("<span class='error-note'>"+response.message+"</span>")
+                                }
+                            },
+                            complete : () => jQuery(".loader-wrap").fadeOut()
+                        });
+                    }
+                }
+            }
+        }
+    },".signinphone-btn")
+    
+    jQuery(".signIn-phone").on({
+        click : e => {
+            jQuery(".signIn-block").hide()
+            jQuery(".signinPhone-block").show()
+            jQuery(".signinPhone-block").find(".phoneinput").show()
+            jQuery(".otp-title").hide()
+            jQuery(".otp-input-group").hide()
+            jQuery(".otp-note").hide()            
+            jQuery(".signinPhone-block").find(".signIn-option").show()            
+        }
+    })
+
+    jQuery(".user-phone-form").on({
+        keyup : e => {
+            if(e.keyCode == 13) {
+                jQuery(e.currentTarget).find(".signinphone-btn").trigger("click")
+            }
+        }
+    })
+
+    jQuery(".user-phone-form").on({
+        focus : e => {
+            jQuery(e.currentTarget).next(".error-note").remove()
+            jQuery(e.currentTarget).parents(".form-input").removeClass("error")
+        }
+    },"#number-for-otp")
+
+    jQuery(".otp-input-group").on({
+        input : e => {
+            jQuery(".otp-input-group").removeClass("error")
+            jQuery(".otp-input-group").find(".error-note").remove()
+        }
+    },"input")
+
+    // jQuery(".otp-input-group").on({
+    //     keypress : e => {
+    //         if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {            
+    //             return false;
+    //         } else {
+    //             var parent = jQuery(jQuery(e.currentTarget).parent());
+            
+    //             if(e.keyCode === 8 || e.keyCode === 37) {
+    //                 var prev = parent.find('input#' + jQuery(e.currentTarget).data('previous'));
+                    
+    //                 if(prev.length) {
+    //                     jQuery(prev).select();
+    //                 }
+    //             } else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+    //                 var next = parent.find('input#' + jQuery(e.currentTarget).data('next'));
+                    
+    //                 if(next.length) {
+    //                     console.log(next.length);
+    //                     jQuery(next).select();
+    //                 } 
+    //             }
+    //         }                
+    //     }
+    // }, "input")
+
+    jQuery('.otp-input-group').find('input').each(function() {
+        jQuery(this).attr('maxlength', 1);
+        jQuery(this).on('keyup', function(e) {
+            
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || (e.which > 57 && e.which < 93 ))) {
+                jQuery(this).val('');            
+                return false;
+            } else {
+               var parent = jQuery(jQuery(this).parent());
+                if(e.keyCode === 8 || e.keyCode === 37) {
+                    var prev = parent.find('input#' + jQuery(this).data('previous'));
+                    
+                    if(prev.length) {
+                        jQuery(prev).select();
+                    }
+                } else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                    var next = parent.find('input#' + jQuery(this).data('next'));
+                    
+                    if(next.length) {
+                        console.log(next.length);
+                        jQuery(next).select();
+                    } 
+                }
+                inputregex = /^[0-9]{1,1}$/;
+                var inputval = jQuery(this).val();
+                if(!inputregex.test(inputval)){
+                    jQuery(this).val(inputval.slice(0, 1));
+                } 
+            }
+        });
+    });
+
+    jQuery(".user-phone-form").on({
+        click : e => {                        
+            if (jQuery(".signinphone-btn").hasClass("register-user")) {
+                let contactNumber = jQuery("#hidden-user-contact-number").val()
+                let customerEmail = jQuery("#hidden-user-email").val()
+                jQuery.ajax({
+                    url : "/customerlogin/validate/resendregisterotp",
+                    type : "POST",
+                    data : {contactnumber : contactNumber, emailid : customerEmail, resendotp : 1},
+                    dataType : "json",
+                    beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                    success : response => {
+                        if (response.error == 0) {
+                            toastmsgfun(response.message)
+                            jQuery('.otp-input-group').find('.error-note').text('');
+                            jQuery('.otp-input-group input').val('');
+                        } else {
+                            toastmsgfun(response.message)
+                        }
+                    },
+                    complete : () => jQuery(".loader-wrap").fadeOut()
+                });
+            } else {
+                let contactNumber = jQuery("#hidden-user-contact-number").val()
+                jQuery.ajax({
+                    url : "/customer/account/loginpost",
+                    type : "POST",
+                    data : {contactnumber : contactNumber, checkContactNumber : 1, returnUser : 0},
+                    dataType : "json",
+                    beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                    success : response => {
+                        if (response.error == 0) {
+                            toastmsgfun(response.message)
+                            jQuery('.otp-input-group').find('.error-note').text('');
+                            jQuery('.otp-input-group input').val('');
+                        } else {
+                            toastmsgfun(response.message)
+                        }
+                    },
+                    complete : () => jQuery(".loader-wrap").fadeOut()
+                });
+            }              
+        }
+    },".resend-otp")
+
+    jQuery(".user-forgetpwd-block").on({
+        click : e => {
+            let error = 0;
+            let userEmail = jQuery("#forget-user-email").val().trim()
+            if (userEmail == '') {
+                jQuery("#forget-user-email").next(".error-note").remove()
+                jQuery("#forget-user-email").after("<span class='error-note'>Please Enter Email Id</span>")
+                jQuery("#forget-user-email").parents(".form-input").addClass("error")
+                error = 1
+            } else if (!validateEmail(userEmail)) {
+                jQuery("#forget-user-email").next(".error-note").remove()
+                jQuery("#forget-user-email").after("<span class='error-note'>Please Enter Valid Email Id</span>")
+                jQuery("#forget-user-email").parents(".form-input").addClass("error")
+                error = 1
+            } else if (userEmail.length > 50) {
+                jQuery("#forget-user-email").next(".error-note").remove()
+                jQuery("#forget-user-email").after("<span class='error-note'>Email should not exceeds 50 characters</span>")
+                jQuery("#forget-user-email").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if (error == 0) {
+                jQuery.ajax({
+                    url : "/customerlogin/register/forgotpasswordpost",
+                    type : "POST",
+                    data : {email : userEmail},
+                    dataType : "json",
+                    beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                    success : response => {                       
+                        jQuery("#forget-user-email").next(".error-note").remove()
+                        jQuery("#forget-user-email").after("<span class='error-note'>"+response.message+"</span>")
+                        setTimeout(() => {
+                            jQuery(".signIn-popup").fadeOut()
+                        }, 5000)                        
+                    },
+                    complete : () => jQuery(".loader-wrap").fadeOut()   
+                })
+            }
+        }
+    },".pwd-btn")
+
+    jQuery(".user-forgetpwd-block").on({
+        keyup : e => {
+            if(e.keyCode == 13) {
+                jQuery(e.currentTarget).find(".pwd-btn").trigger("click")
+            }
+        }
+    })
+
+    jQuery(".user-forgetpwd-block").on({
+        focus : e => {
+            jQuery(e.currentTarget).next(".error-note").remove()
+            jQuery(e.currentTarget).parents(".form-input").removeClass("error")
+        }
+    },"#forget-user-email")
+
+    jQuery(".user-resetpwd-block").on({
+        click : e => {
+            let resetPasswordToken = jQuery("#hidden-reset-password-token").val()
+            let newPassword = jQuery("#new-password").val().trim()
+            let newConfirmedPassword = jQuery("#new-confirmed-password").val().trim()
+            let error = 0
+            if(newPassword == '') {
+                jQuery("#new-password").next(".error-note").remove()
+                jQuery("#new-password").after("<span class='error-note'>Please Enter Password</span>")
+                jQuery("#new-password").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if (newConfirmedPassword == '') {
+                jQuery("#new-confirmed-password").next(".error-note").remove()
+                jQuery("#new-confirmed-password").after("<span class='error-note'>Please Enter Confirmed Password</span>")
+                jQuery("#new-confirmed-password").parents(".form-input").addClass("error")
+                error = 1
+            }
+
+            if (newPassword != '' && newConfirmedPassword != '') {
+                if(newPassword != newConfirmedPassword) {
+                    toastmsgfun("password doesn't match")
+                    error = 1
+                } else if (!validatePassword(newPassword)) {
+                    toastmsgfun("Invalid Password. Password should have min 6 characters and atleast 1 number")
+                    error = 1
+                }   
+            }
+            
+            if(error == 0){
+                jQuery.ajax({
+                    url : "/customer/account/resetpasswordpost",
+                    type : "POST",
+                    data : {token : resetPasswordToken, password : newPassword},
+                    dataType : 'json',
+                    beforeSend : () => jQuery(".loader-wrap").fadeIn(),
+                    success : response => {
+                        if (response.error == 0) {
+                            location.href = "/"
+                        } else {
+                            toastmsgfun(response.message)
+                        }
+                    },
+                    complete : () => jQuery(".loader-wrap").fadeOut()
+                })
+            }
+        }
+    },".resetpwd-btn") 
+
+    jQuery(".user-resetpwd-block").on({
+        keyup : e => {
+            if(e.keyCode == 13) {
+                jQuery(e.currentTarget).find(".resetpwd-btn").trigger("click")
+            }
+        }
+    })
+
+    jQuery(".user-resetpwd-block").on({
+        focus : e => {
+            jQuery(e.currentTarget).next(".error-note").remove()
+            jQuery(e.currentTarget).parents(".form-input").removeClass("error")
+        }
+    },"input")
+
+    jQuery(".signIn-box").on({
+        click : e => {
+            jQuery(".signIn-box").find("div.error").removeClass("error")
+            jQuery(".signIn-box").find(".error-note").remove()
+            jQuery(".signIn-box").find("input").val('')        
+        }
+    },".signIn,.crt-acct,.signIn-phone,.forgt-pwd")
+
+    jQuery(".bg-layer, .close-signIn").on({
+        click : e => {
+            jQuery(".signIn-box").find("div.error").removeClass("error")
+            jQuery(".signIn-box").find(".error-note").remove()
+            jQuery(".signIn-box").find("input").val('')         
+        }
+    })
+
+    jQuery(document).on({
+        click : e => {
+            var element = jQuery(e.currentTarget)
+            if (!element.hasClass('check')) {
+                element.attr('src','/pub/media/fermion/img/eye-slash.svg');
+                element.addClass('check');
+                element.parent('.icon').prev('input').attr("type", "text");
+            } else {
+                element.attr('src','/pub/media/fermion/img/eye.svg');
+                element.removeClass('check');
+                element.parent('.icon').prev('input').attr("type", "password");
+            }
+        }
+    }, ".toggle-password")
+
+    let validateEmail = email => {
+        let re = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$/
+        return re.test(email)
+    }
+
+    let IsMobileNumber = txtMobId => {
+        let mob = /^[0-9]{10}$/
+        return mob.test(txtMobId)
+    }
+
+    let IsPanNumber = txtPan => {
+        let pan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/
+        return pan.test(txtPan)
+    }
+
+    let validatePassword = newPassword => {
+        let pass = /^(?=.*\d)(?=.*[a-z]?)(?=.*[A-Z]?)(?=.*[#?!@$%^&*-]?).{6,}$/
+        return pass.test(newPassword)
+    }
+
+    function showCustomerDetails() {
+        var userData = JSON.parse(localStorage.getItem("register-user"));
+        if (userData != null) {
+            jQuery("#hidden-user-email").val(userData.u_email);
+            jQuery("#hidden-user-contact-number").val(userData.u_telephone);
+            jQuery("#hidden-user-pan-number").val(userData.u_panno);
+            jQuery("#hidden-user-firstname").val(userData.u_firstname);
+            jQuery("#hidden-user-lastname").val(userData.u_lastname);
+            jQuery("#hidden-user-password").val(userData.u_password);
+            jQuery("#hidden-user-subscribe").val(userData.u_is_subscribed);
+            jQuery(".ph-page-no").text(userData.u_telephone);
+        }
+    }
+})

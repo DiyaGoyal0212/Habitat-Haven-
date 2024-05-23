@@ -1,0 +1,148 @@
+body{
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    
+    
+}
+.c{
+    width: 100vw;
+    background-color:rgb(102, 156, 203);
+    text-align: center;
+}
+.containeroo{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(232, 240, 254);
+    margin: auto;
+    width: 580px;
+    /* height: 400px; */
+  
+    
+    justify-content: center;
+    /* margin-top: 70px; */
+    border-radius: 10px;
+    box-shadow: 15px 15px 15px rgb(23, 98, 164);
+    /* margin-left: 200px; */
+}
+/* .container:hover{
+    box-shadow: 15px 15px 15px black;
+    cursor: pointer;
+} */
+.header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 30px;
+
+}
+.header1{
+    position: absolute;
+}
+.texto{
+    color: rgb(50, 111, 164);
+    font-size: 30px;
+    font-weight: 600;
+    text-align: center;
+    /* color: white; */
+}
+.image{
+    width: 170px;
+}
+.inputo{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 45px;
+    background: transparent;
+}
+.in{
+    display: flex;
+    align-items: center;
+    width: 480px;
+    background: transparent;
+    height: 50px;
+    margin: auto;
+    border-radius: 30px;
+    border: 2px solid black;
+}
+.in img{
+    margin: 0px 30px;
+}
+.in input{
+    height: 50px;
+    width: 400px;
+    /* background-color: rgb(212, 203, 203); */
+    background: transparent;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    margin-right: 200px;
+}
+.sub{
+    display: flex;
+    margin-top: 50px;
+}
+.submit{
+    width: 480px;
+    height: 50px;
+    border-radius: 30px;
+    margin: auto;
+    margin-left: 37px;
+    font-size: 20px;
+    cursor: pointer;
+    color:rgb(232, 240, 254) ;
+    background-color: rgb(50, 111, 164);
+    border: none;
+    outline: none;
+    /* background-color: rgb(232, 240, 254); */
+}
+.forget{
+    display: flex;
+    gap: 100px;
+    /* margin: 50px auto; */
+    /* margin-left: 40px; */
+    margin: auto;
+    margin-top: 50px;
+}
+
+.for{
+    color: rgb(50, 111, 164);
+    cursor: pointer;
+    text-decoration: none;
+    /* margin-top: 2px; */
+}
+.for:hover{
+    text-decoration: none;
+}
+.forget1 a{
+    color: rgb(50, 111, 164);
+    cursor: pointer;
+    text-decoration: none;
+}
+.s{
+    text-decoration: none;
+    cursor: pointer;
+    color: rgb(50, 111, 164);
+}
+.s:hover{
+    text-decoration: none;
+}
+.inputo:-internal-autofill-selected{
+    background-color: transparent;
+}
+@media screen and (max-width:600px) {
+    .container{
+        width: 470px;
+    }
+    .in{
+        width: 390px;
+    }
+    .submit{
+        width: 390px;
+        margin-left: 30px;
+    }
+}
